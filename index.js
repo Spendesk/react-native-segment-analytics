@@ -19,5 +19,9 @@ export default {
 
   screen: function (screenName: string, properties: Object) {
     SegmentAnalytics.screen(screenName, properties);
+  },
+
+  reset: function() {
+    SegmentAnalytics.reset();
   }
 };
