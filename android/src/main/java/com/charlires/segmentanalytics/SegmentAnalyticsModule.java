@@ -66,6 +66,12 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
                 this.toProperties(properties));
     }
 
+
+    @ReactMethod
+    public void reset() {
+        Analytics.with(this.getReactApplicationContext()).reset();
+    }
+
     public Properties toProperties(@Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return null;

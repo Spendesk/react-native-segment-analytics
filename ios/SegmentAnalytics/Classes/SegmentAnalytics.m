@@ -33,6 +33,10 @@ RCT_EXPORT_METHOD(screen:(NSString*)screenName properties:(NSDictionary *)proper
     [[SEGAnalytics sharedAnalytics] screen:screenName properties:[self toStringDictionary:properties]];
 }
 
+RCT_EXPORT_METHOD(reset) {
+    [[SEGAnalytics sharedAnalytics] reset];
+}
+
 -(NSMutableDictionary*) toStringDictionary: (NSDictionary *)properties {
     NSMutableDictionary *stringDictionary = [[NSMutableDictionary alloc] init];
     for (NSString* key in [properties allKeys]) {
