@@ -19,17 +19,22 @@ RCT_EXPORT_METHOD(setup:(NSString*)configKey) {
     [SEGAnalytics setupWithConfiguration:configuration];
 }
 
-RCT_EXPORT_METHOD(identify:(NSString*)userId traits:(NSDictionary *)traits) {
-    [[SEGAnalytics sharedAnalytics] identify:userId traits:[self toStringDictionary:traits]];
+RCT_EXPORT_METHOD(identify:(NSString*)userId traits:(NSDictionary *)traits options:(NSDictionary *)options) {
+    [[SEGAnalytics sharedAnalytics] identify:userId
+                                    traits:[self toStringDictionary:traits]
+                                    options:[self toStringDictionary:options]];
 }
 
-RCT_EXPORT_METHOD(track:(NSString*)trackText properties:(NSDictionary *)properties) {
+RCT_EXPORT_METHOD(track:(NSString*)trackText properties:(NSDictionary *)properties options:(NSDictionary *)options) {
     [[SEGAnalytics sharedAnalytics] track:trackText
-                               properties:[self toStringDictionary:properties]];
+                               properties:[self toStringDictionary:properties]
+                               options:[self toStringDictionary:options]];
 }
 
-RCT_EXPORT_METHOD(screen:(NSString*)screenName properties:(NSDictionary *)properties) {
-    [[SEGAnalytics sharedAnalytics] screen:screenName properties:[self toStringDictionary:properties]];
+RCT_EXPORT_METHOD(screen:(NSString*)screenName properties:(NSDictionary *)properties options:(NSDictionary *)options) {
+    [[SEGAnalytics sharedAnalytics] screen:screenName
+                                properties:[self toStringDictionary:properties]
+                                options:[self toStringDictionary:options]];
 }
 
 RCT_EXPORT_METHOD(reset) {
