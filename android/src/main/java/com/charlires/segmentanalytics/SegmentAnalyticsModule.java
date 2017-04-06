@@ -177,7 +177,7 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
 
                 while (entries.hasNextKey()) {
                     String integration = entries.nextKey();
-                    Boolean enabled = entries.getBoolean(integration);
+                    Boolean enabled = integrations.getBoolean(integration);
 
                     options.setIntegration(integration, enabled);
                 }
