@@ -171,14 +171,13 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
             String key = iterator.nextKey();
 
             if (key.equals("integrations")) {
-                Map integrations = readableMap.getMap(key);
+                ReadableMap integrations = readableMap.getMap(key);
                 Options options = new Options();
-                Iterator entries = integrations.entrySet().iterator();
+                ReadableMapKeySetIterator entries = integrations.keySetIterator();
 
-                while (entries.hasNext()) {
-                    Entry entry = entries.next();
-                    String integration = entry.getKey();
-                    Boolean enabled = entry.getValue();
+                while (entries.hasNextKey()) {
+                    String integration = entries.nextKey();
+                    Boolean enabled = entries.getBoolean(integration);
 
                     options.setIntegration(integration, enabled);
                 }
@@ -188,10 +187,6 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
         }
 
         return null;
-    }
-
-    public Options mapToOptions(Map integrations) {
-        
     }
 
 }
