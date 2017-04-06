@@ -12,6 +12,7 @@ import com.facebook.react.bridge.ReadableType;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Properties;
 import com.segment.analytics.Traits;
+import com.segment.analytics.Options;
 
 
 public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
@@ -40,30 +41,33 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void identify(String userId, ReadableMap traits) {
+    public void identify(String userId, ReadableMap traits, ReadableMap options) {
         Analytics.with(this.getReactApplicationContext()).identify(
-                userId,
-                toTraits(traits),
-                null
+            userId,
+            toTraits(traits),
+            toOptions(options)
         );
 
     }
 
     @ReactMethod
-    public void track(String trackText, ReadableMap properties) {
+    public void track(String trackText, ReadableMap properties, ReadableMap options) {
 
         Analytics.with(this.getReactApplicationContext()).track(
-                trackText,
-                this.toProperties(properties)
+            trackText,
+            this.toProperties(properties),
+            toOptions(options)
         );
     }
 
     @ReactMethod
-    public void screen(String screenName, ReadableMap properties) {
+    public void screen(String screenName, ReadableMap properties, ReadableMap options) {
         Analytics.with(this.getReactApplicationContext()).screen(
-                null,
-                screenName,
-                this.toProperties(properties));
+            null,
+            screenName,
+            this.toProperties(properties),
+            toOptions(options)
+        );
     }
 
 
@@ -105,53 +109,89 @@ public class SegmentAnalyticsModule extends ReactContextBaseJavaModule {
                     properties.putValue(key, this.toProperties(readableMap.getMap(key)));
                     break;
                 case Array:
-                    throw new UnsupportedOperationException("Arrays aren't supported yet.");
+                    // throw new UnsupportedOperationException("Arrays aren't supported yet.");
                 default:
-                    throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
+                    // throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
+                    break;
             }
         }
         return properties;
     }
 
     public Traits toTraits(@Nullable ReadableMap readableMap) {
-            if (readableMap == null) {
-                return null;
-            }
-
-            ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
-            if (!iterator.hasNextKey()) {
-                return null;
-            }
-
-            Traits traits = new Traits();
-            while (iterator.hasNextKey()) {
-                String key = iterator.nextKey();
-                ReadableType readableType = readableMap.getType(key);
-
-                switch (readableType) {
-                    case Null:
-                        traits.putValue(key, null);
-                        break;
-                    case Boolean:
-                        traits.putValue(key, readableMap.getBoolean(key));
-                        break;
-                    case Number:
-                        // Can be int or double.
-                        traits.putValue(key, readableMap.getDouble(key));
-                        break;
-                    case String:
-                        traits.putValue(key, readableMap.getString(key));
-                        break;
-                    case Map:
-                        traits.putValue(key, this.toTraits(readableMap.getMap(key)));
-                        break;
-                    case Array:
-                        throw new UnsupportedOperationException("Arrays aren't supported yet.");
-                    default:
-                        throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
-                }
-            }
-            return traits;
+        if (readableMap == null) {
+            return null;
         }
+
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+        if (!iterator.hasNextKey()) {
+            return null;
+        }
+
+        Traits traits = new Traits();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            ReadableType readableType = readableMap.getType(key);
+
+            switch (readableType) {
+                case Null:
+                    traits.putValue(key, null);
+                    break;
+                case Boolean:
+                    traits.putValue(key, readableMap.getBoolean(key));
+                    break;
+                case Number:
+                    // Can be int or double.
+                    traits.putValue(key, readableMap.getDouble(key));
+                    break;
+                case String:
+                    traits.putValue(key, readableMap.getString(key));
+                    break;
+                case Map:
+                    traits.putValue(key, this.toTraits(readableMap.getMap(key)));
+                    break;
+                case Array:
+                    // throw new UnsupportedOperationException("Arrays aren't supported yet.");
+                default:
+                    // throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
+                    break;
+            }
+        }
+        return traits;
+    }
+
+    public @Nullable Options toOptions(@Nullable ReadableMap readableMap) {
+        if (readableMap == null) {
+            return null;
+        }
+
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+
+            if (key.equals("integrations")) {
+                Map integrations = readableMap.getMap(key);
+                Options options = new Options();
+                Iterator entries = integrations.entrySet().iterator();
+
+                while (entries.hasNext()) {
+                    Entry entry = entries.next();
+                    String integration = entry.getKey();
+                    Boolean enabled = entry.getValue();
+
+                    options.setIntegration(integration, enabled);
+                }
+
+                return options;
+            }
+        }
+
+        return null;
+    }
+
+    public Options mapToOptions(Map integrations) {
+        
+    }
 
 }
